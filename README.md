@@ -13,7 +13,10 @@ When the Container is up run these commands
 
 run from the container
 
+copy .env.example file to .env
+
 ```
+cp .env.example .env
 docker-compose exec pnpm run migrate
 docker-compose exec pnpm run db:seed
 ```
@@ -21,6 +24,7 @@ docker-compose exec pnpm run db:seed
 or run from terminal or container terminal
 
 ```
+cp .env.example .env
 pnpm run migrate
 pnpm run db:seed
 ```

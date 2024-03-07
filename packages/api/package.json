@@ -2,6 +2,7 @@
   "scripts": {
     "start": "docker-compose up -d",
     "dev": "tsx watch src/index.ts",
+    "generate:migrations": "drizzle-kit generate:pg",
     "migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/db/seed.ts",
     "test": "vitest"
