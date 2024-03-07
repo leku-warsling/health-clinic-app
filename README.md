@@ -35,6 +35,11 @@ pnpm run migrate
 pnpm run db:seed
 ```
 
+restart api container via gui tool or docker-compose down then docker-compose up -d
+as fails on connection to db before migration is done. was going to create a
+initialization shell script for setup and review docker-compose config but didnt
+have time
+
 There are some simple endpoint tests
 
 ```
