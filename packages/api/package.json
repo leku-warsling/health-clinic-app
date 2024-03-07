@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "docker-compose up -d",
+    "start": "docker-compose up -d --build",
     "dev": "tsx watch src/index.ts",
     "generate:migrations": "drizzle-kit generate:pg",
     "migrate": "tsx src/db/migrate.ts",

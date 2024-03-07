@@ -9,6 +9,12 @@ not setup
 pnpm start
 ```
 
+or
+
+```
+docker-compose up -d --build
+```
+
 When the Container is up run these commands
 
 run from the container
