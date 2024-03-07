@@ -35,7 +35,7 @@ pnpm run migrate
 pnpm run db:seed
 ```
 
-There are some simple endpoint tests wi
+There are some simple endpoint tests
 
 ```
 docker-compose exec pnpm run test
