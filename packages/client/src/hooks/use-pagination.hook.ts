@@ -6,8 +6,8 @@ export type UsePaginationState = {
   boundaries?: number;
   siblings?: number;
   pageSize?: number;
-  total: number | null;
-  current: number;
+  total: number;
+  offset: number;
 };
 
 const range = (start: number, end: number) => {
@@ -21,35 +21,43 @@ const noop = () => {};
 export const usePagination = ({
   onChange = noop,
   boundaries = 1,
+  pageSize = 10,
   siblings = 1,
-  current = 1,
+  offset = 0,
   total,
 }: UsePaginationState) => {
-  const onPrevious = () => onChange(current - 1);
-  const onNext = () => onChange(current + 1);
-  const canNextPage = total ? current + 1 > total : false;
-  const canPreviousPage = current - 1 < 1;
+  console.log(pageSize);
+  const pageCount = useMemo(
+    () => Math.ceil(total / pageSize),
+    [total, pageSize],
+  );
+  const page = Math.ceil(offset / pageSize) + 1;
+  const onPrevious = () => onChange(offset - pageSize);
+  const onNext = () => onChange(offset + pageSize);
+  const canNextPage = page + 1 > pageCount;
+  const canPreviousPage = page - 1 < 1;
 
   const paginationRange = useMemo((): (number | "dots")[] => {
-    if (!total) return [];
+    if (!pageCount) return [];
     const totalPageNumbers = siblings * 2 + 3 + boundaries * 2;
 
-    if (totalPageNumbers >= total) {
-      return range(1, total);
+    if (totalPageNumbers >= pageCount) {
+      return range(1, pageCount);
     }
 
-    const leftSiblingIndex = Math.max(current - siblings, boundaries);
-    const rightSiblingIndex = Math.min(current + siblings, total - boundaries);
+    const leftSiblingIndex = Math.max(page - siblings, boundaries);
+    const rightSiblingIndex = Math.min(page + siblings, pageCount - boundaries);
 
     const shouldShowLeftDots = leftSiblingIndex > boundaries + 2;
-    const shouldShowRightDots = rightSiblingIndex < total - (boundaries + 1);
+    const shouldShowRightDots =
+      rightSiblingIndex < pageCount - (boundaries + 1);
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
       const leftItemCount = siblings * 2 + boundaries + 2;
       return [
         ...range(1, leftItemCount),
         DOTS,
-        ...range(total - (boundaries - 1), total),
+        ...range(pageCount - (boundaries - 1), pageCount),
       ];
     }
 
@@ -58,7 +66,7 @@ export const usePagination = ({
       return [
         ...range(1, boundaries),
         DOTS,
-        ...range(total - rightItemCount, total),
+        ...range(pageCount - rightItemCount, pageCount),
       ];
     }
 
@@ -67,19 +75,21 @@ export const usePagination = ({
       DOTS,
       ...range(leftSiblingIndex, rightSiblingIndex),
       DOTS,
-      ...range(total - boundaries + 1, total),
+      ...range(pageCount - boundaries + 1, pageCount),
     ];
-  }, [total, siblings, current, boundaries]);
+  }, [pageCount, siblings, page, boundaries]);
 
   return {
     range: paginationRange,
-    isActive: equals(current),
+    isActive: equals(page),
     setActive: (n: number) => {
       onChange(n);
     },
     canPreviousPage,
     canNextPage,
     onPrevious,
+    pageCount,
     onNext,
+    page,
   };
 };

@@ -1,3 +1,4 @@
+import { render } from "react-dom";
 import { type Patient } from "./patients.schema";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -26,4 +27,42 @@ const PATIENT_LIST_COLUMNS = [
   }),
 ];
 
-export { PATIENT_LIST_COLUMNS };
+const TABLE_COLUMNS = [
+  {
+    title: "First Name",
+    accessor: "first_name",
+    isSortable: true,
+  },
+  {
+    title: "Last Name",
+    accessor: "last_name",
+    isSortable: true,
+  },
+  {
+    title: "Email",
+    accessor: "email",
+    isSortable: true,
+  },
+  {
+    title: "Contact Number",
+    accessor: "contact_number",
+    isSortable: true,
+  },
+  {
+    title: "Date of Birth",
+    accessor: "date_of_birth",
+    isSortable: true,
+    render: (value: Date) => value.toLocaleDateString(),
+  },
+];
+
+const DEFAULT_QUERY_PARAMS = {
+  limit: 10,
+  offset: 0,
+  sort: {
+    column: "first_name",
+    order: "asc",
+  },
+} as const;
+
+export { PATIENT_LIST_COLUMNS, TABLE_COLUMNS, DEFAULT_QUERY_PARAMS };

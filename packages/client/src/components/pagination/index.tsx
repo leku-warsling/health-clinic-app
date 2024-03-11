@@ -14,6 +14,7 @@ import {
   Input,
   chakra,
   Select,
+  Spacer,
 } from "@chakra-ui/react";
 
 export type PaginationOwnProps = {
@@ -35,14 +36,13 @@ export const Pagination = ({
   isCompact = false,
   isLoading = false,
   pageSize = 10,
-  variant = "ghost",
   size = "md",
   onSizeChange,
   isDisabled,
   boundaries,
+  offset = 0,
   onChange,
   siblings,
-  current,
   total,
   ...props
 }: PaginationProps) => {
@@ -51,14 +51,17 @@ export const Pagination = ({
     canNextPage,
     onPrevious,
     setActive,
+    pageCount,
     isActive,
     onNext,
     range,
+    page,
   } = usePagination({
     boundaries,
+    pageSize,
     siblings,
     onChange,
-    current,
+    offset,
     total,
   });
 
@@ -67,10 +70,7 @@ export const Pagination = ({
   };
 
   const renderPageSizeSelect = () => {
-    if (!total) {
-      return null;
-    }
-
+    if (total < pageSizeOptions[0]) return null;
     return (
       <Select
         onChange={_onSizeChange}
@@ -92,16 +92,16 @@ export const Pagination = ({
       return (
         <Flex align="center" gap={2} mx={2}>
           <Input
-            value={current}
+            value={page}
+            type="number"
             textAlign="center"
             maxWidth="50px"
             bgColor="white"
             onChange={(e) => {
-              const n = Number(e.target.value);
+              const n = (Number(e.target.value) - 1) * pageSize;
               if (n <= totalNumber) setActive(n);
             }}
             size={size}
-            borderColor="#121212"
           />
 
           <Text fontSize={size}>/ {totalNumber}</Text>
@@ -118,7 +118,7 @@ export const Pagination = ({
       return (
         <chakra.button
           key={`${n}-${index}`}
-          onClick={() => setActive(n)}
+          onClick={() => setActive((n - 1) * pageSize)}
           bgColor={isActive(n) ? "primary" : "none"}
           color={isActive(n) ? "white" : "#2D2D2D"}
           fontWeight={600}
@@ -141,15 +141,12 @@ export const Pagination = ({
       );
     }
 
-    if (!total) {
-      return null;
-    }
-
     return (
       <ButtonGroup
+        hidden={pageCount < 2}
         isDisabled={isDisabled}
         alignItems="center"
-        variant={variant}
+        variant="ghost"
         spacing={0}
         size={size}
       >
@@ -172,13 +169,14 @@ export const Pagination = ({
 
   return (
     <Flex
+      justifyContent={["normal", "space-between"]}
       alignItems={["center", "flex-start"]}
       flexDirection={["column", "row"]}
       gap="4"
-      justifyContent={["normal", "space-between"]}
       {...props}
     >
       {renderControls()}
+      <Spacer />
       {showSizeChanger && renderPageSizeSelect()}
     </Flex>
   );

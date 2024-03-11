@@ -57,7 +57,8 @@ const theme = extendTheme({
     body: "'Sen', sans-serif",
   },
   colors: {
-    primary: "#8664E3",
+    // primary: "#8664E3",
+    primary: "#5D40A1",
   },
   components: {
     Input,
